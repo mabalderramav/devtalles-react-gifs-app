@@ -1,44 +1,39 @@
-import {mockGifs} from "./mock-data/gifs.mock.ts";
+import {CustomHeader} from "./shared/components/CustomHeader";
+import {SearchBar} from "./shared/components/SearchBar";
+import {PreviousSearches} from "./gifs/components/PreviousSearches";
+import {GifList} from "./gifs/components/GifList";
+import {useState} from "react";
+import {getGifsByQuery} from "./gifs/actions/get-gifs-by-query.action";
+import type {Gif} from "./gifs/interfaces/gif.interface.ts";
 
 export const GifsApp = () => {
+    const [previousTerms, setPreviousTerms] = useState<string[]>([]);
+    const [gifs, setGifs] = useState<Gif[]>([]);
+
+    const handleTermClicked = (term: string) => {
+        console.log(term);
+    }
+
+    const handleSearch = async (query: string = '') => {
+        const trimmedQuery = query.trim().toLowerCase();
+        if (trimmedQuery.length === 0) return;
+        if (previousTerms.includes(trimmedQuery)) return;
+        setPreviousTerms([trimmedQuery, ...previousTerms].slice(0, 7));
+
+        const gifs = await getGifsByQuery(trimmedQuery);
+        setGifs(gifs);
+    }
+
     return (
         <>
             {/* Header */}
-            <div className="content-center">
-                <h1>Search of Gifs</h1>
-                <p>Search for your favorite gifs</p>
-            </div>
+            <CustomHeader title="Search of Gifs" description="Search for your favorite gifs"/>
             {/* Search */}
-            <div className="search-container">
-                <input type="text" placeholder="Search for gifs..."/>
-                <button>Search</button>
-            </div>
-
+            <SearchBar placeholder="Search for gifs!!!" onQuery={handleSearch}/>
             {/*    Preview searched gifs    */}
-            <div className="previous-searches">
-                <h2>Previous searches</h2>
-                <ul className="previous-searches-list">
-                    <li>Goku</li>
-                    <li>Vegeta</li>
-                    <li>Kriling</li>
-                    <li>Gojan</li>
-                </ul>
-            </div>
-
+            <PreviousSearches previousSearches={previousTerms} onLabelClicked={handleTermClicked}/>
             {/*    Gifs   */}
-            <div className="gifs-container">
-                {
-                    mockGifs.map((gif) => (
-                        <div className="gif-card" key={gif.id}>
-                            <img src={gif.url} alt={gif.title}/>
-                            <h3>{gif.title}</h3>
-                            <p>
-                                {gif.width} x {gif.height} (1.5MB)
-                            </p>
-                        </div>
-                    ))
-                }
-            </div>
+            <GifList gifs={gifs}/>
         </>
     )
 }

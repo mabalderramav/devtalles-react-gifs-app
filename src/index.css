@@ -95,21 +95,32 @@ h1 {
 }
 
 .previous-searches-list li {
+  margin-bottom: 20px;
+}
+
+.previous-searches-list button {
+  all: unset;
+  cursor: pointer;
+  display: inline-block;
   padding: 5px 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  cursor: pointer;
   font-size: 14px;
   font-weight: 400;
   font-style: normal;
   color: #fff;
   background-color: #000;
-  margin-bottom: 20px;
+  line-height: 1;
 }
 
-.previous-searches-list li:hover {
+.previous-searches-list button:hover {
   background-color: #333;
   transition: background-color 0.3s ease;
+}
+
+.previous-searches-list button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 /* Gifs */
